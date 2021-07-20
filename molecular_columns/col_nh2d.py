@@ -80,7 +80,7 @@ def Q_o_NH2D(Tex=5*u.K):
         return Q_o_NH2D_all
 
 
-def p_NH2D_Column_Density(Tex=5*u.K, sigma_v=0.2*u.km/u.s, tau=2.0):
+def p_NH2D_thick(Tex=5*u.K, sigma_v=0.2*u.km/u.s, tau=2.0):
     """
     Column density determination for the para-NH2D (1_{11}-1{01}) transition.
     The frequency and Einstein coefficient are obtained from LAMBDA database.
@@ -95,7 +95,7 @@ def p_NH2D_Column_Density(Tex=5*u.K, sigma_v=0.2*u.km/u.s, tau=2.0):
     return Ncol.to(u.cm**-2)
 
 
-def o_NH2D_Column_Density(Tex=5*u.K, sigma_v=0.2*u.km/u.s, tau=2.0):
+def o_NH2D_thick(Tex=5*u.K, sigma_v=0.2*u.km/u.s, tau=2.0):
     """
     Column density determination for the ortho-NH2D (1_{11}-1{01}) transition.
     The frequency and Einstein coefficient are obtained from LAMBDA database.
