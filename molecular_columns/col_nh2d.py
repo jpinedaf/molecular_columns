@@ -2,6 +2,7 @@ import numpy as np
 import astropy.units as u
 from astropy.constants import c, k_B, h
 
+# from .common_functions import J_nu
 # g_u and E_u values obtained from LAMBDA database
 # https://home.strw.leidenuniv.nl/~moldata/datafiles/p-nh2d.dat
 gu_p_list = np.array([3.0, 9.0, 9.0, 9.0, 15.0, 15.0, 15.0, 15.0, 15.0,
@@ -109,5 +110,5 @@ def o_NH2D_thick(Tex=5*u.K, sigma_v=0.2*u.km/u.s, tau=2.0):
          / (np.exp(h*freq/k_B/Tex) - 1) * TdV
     return Ncol.to(u.cm**-2)
 
-def c_tau(tau):
-    return tau / (1 - np.exp(-tau))
+# def c_tau(tau):
+#     return tau / (1 - np.exp(-tau))

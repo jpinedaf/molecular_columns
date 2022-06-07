@@ -2,7 +2,9 @@ import numpy as np
 import astropy.units as u
 from astropy.constants import c, k_B, h
 
-# g_u and E_u values obtained from LAMBDA database
+from .common_functions import J_nu, c_tau
+
+# g_u and E_u values obtained from LAMDA database
 # https://home.strw.leidenuniv.nl/~moldata/datafiles/h13co+@xpol.dat
 gu_list = np.array([1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0, 
                     17.0, 19.0, 21.0, 23.0, 25.0, 27.0, 29.0, 
@@ -42,6 +44,10 @@ Aij_list = np.array([3.8534e-05, 3.6987e-04, 1.3374e-03,
                      8.7941e-01, 9.8946e-01, 1.1080e+00,
                      1.2358e+00, 1.3731e+00, 1.5199e+00]) / u.s
 
+T_bg = 2.73 * u.K
+
+# def J_nu(Tex=5*u.K, freq=100 * u.GHz):
+#     return (h*freq/k_B/(np.exp(h*freq/k_B/Tex) - 1.0)).to(u.K)
 
 def Q_H13COp_i(index, Tex=5*u.K):
     """
@@ -73,15 +79,17 @@ def H13COp_thin(J_up=1, Tex=5*u.K, TdV=1.0*u.K*u.km/u.s):
     The A_ul, frequency and Einstein coefficient are obtained from LAMBDA database.
     """
     if J_up < np.size(Aij_list):
-        freq = Aij_list[J_up - 1] # 110.153594*u.GHz
+        freq = freq_list[J_up - 1] # 110.153594*u.GHz
         A_ul = Aij_list[J_up - 1] # 0.165e-4/u.s
     else:
         print('J_up is not available')
         return np.nan
+    Jex = J_nu(Tex=Tex, freq=freq)
+    Jbg = J_nu(Tex=T_bg, freq=freq)
     # J_up = 2
-    Ncol = (8*np.pi*k_B*freq**2/c**3/h) * Q_H13COp(Tex=Tex) \
+    Ncol = (8*np.pi*freq**3/c**3) * Q_H13COp(Tex=Tex) \
          / A_ul / Q_H13COp_i(J_up, Tex=Tex) \
-         / (np.exp(h*freq/k_B/Tex) - 1) * TdV
+         / (np.exp(h*freq/k_B/Tex) - 1) * TdV / (Jex - Jbg)
     return Ncol.to(u.cm**-2)
 
 
@@ -90,8 +98,8 @@ def H13COp_thick(J_up=1, Tex=5*u.K, sigma_v=0.2*u.km/u.s, tau=2.0):
     Total column density determination from the HCO+ J_up -> J_up-1 transition.
     The A_ul, frequency and Einstein coefficient are obtained from LAMBDA database.
     """
-    TdV = np.sqrt(2*np.pi) * tau * sigma_v
+    TdV = np.sqrt(2*np.pi) * tau * sigma_v# * (Jex - Jbg)
     return H13COp_thin(J_up=J_up, Tex=Tex, TdV=TdV)
 
-def c_tau(tau):
-    return tau / (1 - np.exp(-tau))
+# def c_tau(tau):
+#     return tau / (1 - np.exp(-tau))
