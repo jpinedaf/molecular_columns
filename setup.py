@@ -12,7 +12,7 @@ LICENSE = "MIT"
 URL = "https://github.com/jpinedaf/molecular_columns.git"
 
 # VERSION should be PEP386 compatible (http://www.python.org/dev/peps/pep-0386)
-VERSION = '0.2.dev1'
+VERSION = '0.3.dev1'
 
 here = os.path.abspath(os.path.dirname(__file__))
 def read(fname):
@@ -24,7 +24,7 @@ setup(
     description=DESCRIPTION,
     long_description=read('README.md'),
     packages=['molecular_columns'],
-    install_requires=['astropy>=2.0', 'numpy'],
+    install_requires=['astropy>=5.0', 'numpy'],
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license=LICENSE,
