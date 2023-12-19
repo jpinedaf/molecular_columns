@@ -12,7 +12,7 @@ LICENSE = "MIT"
 URL = "https://github.com/jpinedaf/molecular_columns.git"
 
 # VERSION should be PEP386 compatible (http://www.python.org/dev/peps/pep-0386)
-VERSION = '0.3.dev1'
+VERSION = '0.4.dev1'
 
 here = os.path.abspath(os.path.dirname(__file__))
 def read(fname):

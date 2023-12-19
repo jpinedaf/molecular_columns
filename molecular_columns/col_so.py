@@ -2,7 +2,7 @@ import numpy as np
 import astropy.units as u
 from astropy.constants import c, k_B, h
 
-from .common_functions import J_nu, c_tau
+from .common_functions import J_nu
 
 cm2K = ((h*c/k_B) / u.cm).to(u.K)
 # g_u and E_u values obtained from LAMDA database
