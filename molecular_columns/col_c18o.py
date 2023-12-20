@@ -41,7 +41,7 @@ def Q_C18O(Tex=5*u.K):
     if Tex.size == 1:
         return np.sum(Q_C18O_i(full_index, Tex=Tex))
     else:
-        Q_C18_all = np.zeros_like(Tex.value)
+        Q_C18O_all = np.zeros_like(Tex.value)
         for i in range(Tex.size):
             Q_C18O_all[i] = np.sum(Q_C18O_i(full_index, Tex=Tex[i]))
         return Q_C18O_all
