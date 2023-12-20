@@ -7,3 +7,4 @@ collection of functions to calculate column densities for different species. Usu
 - ortho-/para-NH<sub>2</sub>D
 - SO
 - DCN
+- C<sup>18</sup>>O

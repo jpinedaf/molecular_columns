@@ -2,7 +2,7 @@ import numpy as np
 import astropy.units as u
 from astropy.constants import c, k_B, h
 
-from importlib_resources import files
+from importlib.resources import files
 
 from .common_functions import J_nu
 
