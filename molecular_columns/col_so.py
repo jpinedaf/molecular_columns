@@ -406,28 +406,6 @@ line_list = {
 }
 line_index = [key for key in line_list]
 
-freq_list = np.array([86.7542884, 173.5066953, 260.2553390, 
-                      346.9983381, 433.7338110, 520.4598762, 
-                      607.1746520, 693.8762570, 780.5628096, 
-                      867.2324283, 953.8832314, 1040.5133375, 
-                      1127.1208650, 1213.7039324, 1300.2606580, 
-                      1386.7891604, 1473.2875580, 1559.7539693,
-                      1646.1865126, 1732.5833065, 1818.9424694,
-                      1905.2621198, 1991.5403760, 2077.7753566,
-                      2163.9651800, 2250.1079647, 2336.2018290,
-                      2422.2448915, 2508.2352706, 2594.1710848]) * u.GHz
-
-Aij_list = np.array([3.8534e-05, 3.6987e-04, 1.3374e-03, 
-                     3.2879e-03, 6.5667e-03, 1.1520e-02, 
-                     1.8492e-02, 2.7831e-02, 3.9885e-02, 
-                     5.4985e-02, 7.3483e-02, 9.5725e-02, 
-                     1.2205e-01, 1.5282e-01, 1.8830e-01, 
-                     2.2894e-01, 2.7496e-01, 3.2678e-01, 
-                     3.8472e-01, 4.4914e-01, 5.2030e-01, 
-                     5.9864e-01, 6.8427e-01, 7.7774e-01,
-                     8.7941e-01, 9.8946e-01, 1.1080e+00,
-                     1.2358e+00, 1.3731e+00, 1.5199e+00]) / u.s
-
 T_bg = 2.73 * u.K
 
 def Q_SO_i(index, Tex=5*u.K):
@@ -455,13 +433,43 @@ def Q_SO(Tex=5*u.K):
     with the corresponding partition function for the requested Tex.
     """
     if Tex.size == 1:
-        return np.sum(Q_SO_i(full_index, Tex=Tex))
+        if Tex <= 0 | np.isnan(Tex):
+            return np.nan
+        else:
+            return np.sum(Q_SO_i(full_index, Tex=Tex))
     else:
         Q_SO_all = np.zeros_like(Tex.value)
-        for i in range(Tex.size):
-            Q_SO_all[i] = np.sum(Q_SO_i(full_index, Tex=Tex[i]))
+        # for i in range(Tex.size):
+        for i, Trot_i in np.ndenumerate(Tex):
+            if np.isnan(Tex[i]):
+                Q_SO_all[i] = np.nan 
+            else:
+                Q_SO_all[i] = np.sum(Q_SO_i(full_index, Tex=Tex[i]))
         return Q_SO_all
 
+def SO_thin_Nu_Rot(N_J_up='0_1', N_J_low='1_0', TdV=1.0*u.K*u.km/u.s, give_Eup=False):
+    """
+    Calculation of the Nu/g_u term, which is used for the rotational diagram.
+    The column density determination is from the SO N_J_up - N_J_low transition, 
+    where N_J_up and N_J_low are the upper and lower N_J levels, 
+    e.g., '0_1' and '1_0' to make the '0_1-1_0' transition.
+    The A_ul, frequency and Einstein coefficient are obtained from LAMBDA database.
+    If give_Eup is True, then the E_up (in K) is also returned.
+    """
+    N_J = N_J_up + '-' + N_J_low
+    if N_J in line_index:
+        freq = line_list[N_J]['freq'] * u.GHz
+        A_ul = line_list[N_J]['A_ij'] / u.s
+        E_up = SO_levels[N_J_up]['Eup']
+        g_up = SO_levels[N_J_up]['g_u']
+    else:
+        print('Transition {0} is not available'.format(N_J))
+        return np.nan
+    Ncol = (8*np.pi*k_B*freq**2/c**3) * TdV / A_ul / g_up / h
+    if give_Eup:
+        return Ncol.to(u.cm**-2), E_up
+    else:
+        return Ncol.to(u.cm**-2)
 
 def SO_thin(N_J_up='0_1', N_J_low='1_0', Tex=5*u.K, TdV=1.0*u.K*u.km/u.s):
     """
