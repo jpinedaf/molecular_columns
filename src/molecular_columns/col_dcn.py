@@ -2,23 +2,25 @@ import numpy as np
 import astropy.units as u
 from astropy.constants import c, k_B, h
 
+from importlib.resources import files
+
+from .common_functions import J_nu
+
 # transition properties obtained from splatalogue:
 # dcn.dat (downloaded 2023 nov 7)
-gu_list = np.loadtxt('dcn.dat', usecols=4)
+file_mol = files('molecular_columns').joinpath('dcn.dat')
+gu_list = np.loadtxt(file_mol, usecols=4)
 
-E_u_list = np.loadtxt('dcn.dat', usecols=3) * u.K
+E_u_list = np.loadtxt(file_mol, usecols=3) * u.K
 
 full_index = np.arange(np.size(E_u_list))
 
-freq_list = np.loadtxt('dcn.dat', usecols=0) * u.GHz
+freq_list = np.loadtxt(file_mol, usecols=0) * u.GHz
 
-Aij_list = 10.0**(np.loadtxt('dcn.dat', usecols=2)) / u.s
+Aij_list = 10.0**(np.loadtxt(file_mol, usecols=2)) / u.s
 
 T_bg = 2.73 * u.K
 
-
-def J_nu(Tex=5*u.K, freq=100 * u.GHz):
-    return (h*freq/k_B/(np.exp(h*freq/k_B/Tex) - 1.0)).to(u.K)
 
 def Q_DCN_i(index, Tex=5*u.K):
     """

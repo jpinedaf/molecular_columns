@@ -109,6 +109,11 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+# VS Code and Environment
+.vscode/
+
+# avoid MacOS system files
+.DS_Store
 
 # Spyder project settings
 .spyderproject
