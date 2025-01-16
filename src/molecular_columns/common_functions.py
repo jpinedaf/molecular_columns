@@ -1,27 +1,24 @@
-# from __future__ import annotations
 import numpy as np
 import astropy.units as u
-from astropy.constants import c, k_B, h
-# from astropy.units.core import UnitConversionError
+from astropy.constants import k_B, h
 
 
 @u.quantity_input
-def J_nu(Tex: u.Quantity[u.K] = 5 * u.K, freq: u.Quantity[u.GHz] = 100 * u.GHz) -> u.K:
-    # def J_nu(Tex: u.K, freq: u.GHz):  # -> u.K:
+def J_nu(Tex: u.K = 5 * u.K, freq: u.GHz = 100 * u.GHz) -> u.K:
     """
     Calculate the Planck function at a given frequency and excitation temperature.
     Parameters
     ----------
-    Tex : Quantity
+    Tex : u.K
         The excitation temperature of the line.
-    freq : Quantity
+    freq : u.GHz
         The frequency of the line.
     Returns
     -------
-    J : Quantity
+    J : u.K
         The Planck function at the given frequency and excitation temperature.
     """
-    return (h*freq/k_B/(np.exp(h*freq/k_B/Tex) - 1.0))
+    return h * freq / k_B / (np.exp(h * freq / k_B / Tex) - 1.0)
 
 
 def c_tau(tau: float) -> float:
@@ -34,7 +31,7 @@ def c_tau(tau: float) -> float:
     Returns
     -------
     c : float
-        The correction factor for the optical depth.    
+        The correction factor for the optical depth.
     """
     if tau <= 0 or np.isnan(tau):
         return np.nan
@@ -42,7 +39,7 @@ def c_tau(tau: float) -> float:
 
 
 @u.quantity_input
-def tau_nu(Tex=5*u.K, Tbg=2.73*u.K, freq=100 * u.GHz, Tp=1 * u.K) -> float:
+def tau_nu(Tex=5 * u.K, Tbg=2.73 * u.K, freq=100 * u.GHz, Tp=1 * u.K) -> float:
     """
     Calculate the optical depth of a line given the peak temperature of the line.
     Parameters
