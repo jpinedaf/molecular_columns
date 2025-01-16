@@ -24,7 +24,7 @@ license = {text = "MIT License"}
 dynamic = ["version"]
 
 [tool.setuptools_scm]
-version_file = "src/molecular_columns/_version.py"
+version_file = "src/molecular_columns/version.py"
 
 [tool.setuptools]
 include-package-data = true
