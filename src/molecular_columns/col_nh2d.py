@@ -162,6 +162,17 @@ def Q_p_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
     The function returns the individual elements of the partition function:
     the occupancy of each level dependent on degeneracy and energy level
     for a given excitation temperature.
+
+    Parameters
+    ----------
+    index : int
+        The index of the energy level.
+    Tex : u.K
+        The excitation temperature.
+    Returns
+    -------
+    float
+        The occupancy of the level.
     """
     return gu_p_list[index] * np.exp(-E_u_p_list[index] / Tex)
 
@@ -169,9 +180,18 @@ def Q_p_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
 @u.quantity_input
 def Q_p_NH2D(Tex: u.K = 5 * u.K) -> float:
     """
-    It returns the particion function for para-NH2D with an excitation
+    It returns the partition function for para-NH2D with an excitation
     temperature.
     It uses the first 30-energy levels.
+
+    Parameters
+    ----------
+    Tex : u.K
+        The excitation temperature.
+    Returns
+    -------
+    Q_p_NH2D_all : float
+        The partition function.
     """
     if Tex.size == 1:
         return np.sum(Q_p_NH2D_i(p_full_index, Tex=Tex))
@@ -188,6 +208,17 @@ def Q_o_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
     The function returns the individual elements of the partition function:
     the occupancy of each level dependent on degeneracy and energy level
     for a given excitation temperature.
+
+    Parameters
+    ----------
+    index : int
+        The index of the energy level.
+    Tex : u.K
+        The excitation temperature.
+    Returns
+    -------
+    float
+        The occupancy of the level.
     """
     return gu_o_list[index] * np.exp(-E_u_o_list[index] / Tex)
 
@@ -195,9 +226,18 @@ def Q_o_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
 @u.quantity_input
 def Q_o_NH2D(Tex: u.K = 5 * u.K) -> float:
     """
-    It returns the particion function for ortho-NH2D with an excitation
+    It returns the partition function for ortho-NH2D with an excitation
     temperature.
     It uses the first 30-energy levels.
+
+    Parameters
+    ----------
+    Tex : u.K
+        The excitation temperature.
+    Returns
+    -------
+    Q_o_NH2D_all : float
+        The partition function.
     """
     if Tex.size == 1:
         return np.sum(Q_o_NH2D_i(o_full_index, Tex=Tex))
@@ -215,6 +255,20 @@ def p_NH2D_thick(
     """
     Column density determination for the para-NH2D (1_{11}-1{01}) transition.
     The frequency and Einstein coefficient are obtained from LAMBDA database.
+
+    Parameters
+    ----------
+    Tex : u.K
+        The excitation temperature.
+    sigma_v : u.km / u.s
+        The velocity dispersion.
+    tau : float
+        The optical depth.
+
+    Returns
+    -------
+    Ncol : u.cm**-2
+        The column density.
     """
     freq = 110.153594 * u.GHz
     A_ul = 0.165e-4 / u.s
@@ -228,7 +282,7 @@ def p_NH2D_thick(
         / (np.exp(h * freq / k_B / Tex) - 1)
         * TdV
     )
-    return Ncol  # .to(u.cm**-2)
+    return Ncol
 
 
 @u.quantity_input
@@ -238,6 +292,20 @@ def o_NH2D_thick(
     """
     Column density determination for the ortho-NH2D (1_{11}-1{01}) transition.
     The frequency and Einstein coefficient are obtained from LAMBDA database.
+
+    Parameters
+    ----------
+    Tex : u.K
+        The excitation temperature.
+    sigma_v : u.km / u.s
+        The velocity dispersion.
+    tau : float
+        The optical depth.
+
+    Returns
+    -------
+    Ncol : u.cm**-2
+        The column density.
     """
     freq = 85.92627 * u.GHz
     A_ul = 0.782e-5 / u.s
