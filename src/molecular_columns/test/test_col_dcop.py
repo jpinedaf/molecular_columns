@@ -21,5 +21,8 @@ def test_col_dcop_invalid_units():
 
 def test_col_dcop_thin():
     result = col_dcop.DCOp_thin(
+        J_up=30, Tex=5 * u.K, TdV=1.0 * u.K * u.km / u.s)
+    assert np.isnan(result.value)
+    result = col_dcop.DCOp_thin(
         J_up=1, Tex=5 * u.K, TdV=1.0 * u.K * u.km / u.s)
     assert pytest.approx(result.to(u.cm**-2).value, rel=0.001) == 1.6109e+12

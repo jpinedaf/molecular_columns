@@ -231,14 +231,13 @@ def H13COp_thin(
         The column density.
     """
     if J_up < np.size(Aij_list):
-        freq = freq_list[J_up - 1]  # 110.153594*u.GHz
-        A_ul = Aij_list[J_up - 1]  # 0.165e-4/u.s
+        freq = freq_list[J_up - 1]
+        A_ul = Aij_list[J_up - 1]
     else:
         print("J_up is not available")
-        return np.nan
+        return np.nan*u.cm**-2
     Jex = J_nu(Tex=Tex, freq=freq)
     Jbg = J_nu(Tex=T_bg, freq=freq)
-    # J_up = 2
     Ncol = (
         (8 * np.pi * freq**3 / c**3)
         * Q_H13COp(Tex=Tex)
