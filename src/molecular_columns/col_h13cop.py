@@ -159,6 +159,7 @@ Aij_list = (
 )
 
 
+@u.quantity_input
 def Q_H13COp_i(index: int, Tex: u.K = 5 * u.K) -> float:
     """
     The function returns the individual elements of the partition function:
@@ -179,6 +180,7 @@ def Q_H13COp_i(index: int, Tex: u.K = 5 * u.K) -> float:
     return gu_list[index] * np.exp(-E_u_list[index] / Tex)
 
 
+@u.quantity_input
 def Q_H13COp(Tex: u.K = 5 * u.K) -> float:
     """
     It returns the partition function for H^{13}CO^+ with an excitation
