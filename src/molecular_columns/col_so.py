@@ -523,7 +523,7 @@ def SO_thin_Nu_Rot(N_J_up: str = '2_1', N_J_low: str = '1_1', TdV: u.K*u.km/u.s 
 
 
 @u.quantity_input
-def SO_thin(N_J_up: str = '0_1', N_J_low: str = '1_0', Tex: u.K = 5*u.K, TdV=1.0*u.K*u.km/u.s, T_bg: u.K = 2.73 * u.K) -> u.cm**-2:
+def SO_thin(N_J_up: str = '2_1', N_J_low: str = '1_1', Tex: u.K = 5*u.K, TdV=1.0*u.K*u.km/u.s, T_bg: u.K = 2.73 * u.K) -> u.cm**-2:
     """
     Total column density determination from the SO N_J_up - N_J_low transition, 
     where N_J_up and N_J_low are the upper and lower N_J levels, 
