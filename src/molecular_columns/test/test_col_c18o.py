@@ -21,6 +21,9 @@ def test_col_c18o_invalid_units():
 
 def test_col_c18o_thin():
     result = col_c18o.C18O_thin(
+        J_up=60, Tex=5 * u.K, TdV=1.0 * u.K * u.km / u.s)
+    assert np.isnan(result.value)
+    result = col_c18o.C18O_thin(
         J_up=1, Tex=5 * u.K, TdV=1.0 * u.K * u.km / u.s)
     assert pytest.approx(result.to(u.cm**-2).value, rel=0.0001) == 3.2835e+15
 

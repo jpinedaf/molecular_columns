@@ -120,7 +120,4 @@ def Ncol_C18O_3_2_Curtis2010(TdV: u.K*u.km/u.s, Tex: u.K = 10*u.K) -> u.cm**-2:
     Ncol : u.cm**-2
         The column density.
     """
-    if TdV.unit != (u.K * u.km / u.s):
-        print('Unit of integrated intensity is not K km/s, please modify accordingly')
-        return np.nan * u.cm**-2
     return 5e12 * (Tex/u.K) * np.exp(31.6*u.K/Tex) * (TdV/(u.K*u.km/u.s)) * u.cm**-2
