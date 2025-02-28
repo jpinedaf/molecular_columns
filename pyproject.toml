@@ -7,19 +7,17 @@ name = "molecular_columns"
 dependencies = [
   "importlib-resources;python_version<'3.9'",
   "astropy>=5.0",
-  "numpy"
+  "numpy",
+  "pytest",
+  "pytest-cov",
 ]
 
 requires-python = ">=3.7"
-authors = [
-  {name = "Jaime E. Pineda", email = "jpineda@mpe.mpg.de"},
-]
-maintainers = [
-  {name = "Jaime E. Pineda", email = "jpineda@mpe.mpg.de"},
-]
+authors = [{ name = "Jaime E. Pineda", email = "jpineda@mpe.mpg.de" }]
+maintainers = [{ name = "Jaime E. Pineda", email = "jpineda@mpe.mpg.de" }]
 description = "Column density calculations of molecular especies."
 readme = "README.md"
-license = {text = "MIT License"}
+license = { text = "MIT License" }
 
 dynamic = ["version"]
 
@@ -28,7 +26,7 @@ version_file = "src/molecular_columns/_version.py"
 
 [tool.setuptools]
 include-package-data = true
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -41,17 +39,17 @@ source = ["molecular_columns"]
 [tool.pytest.ini_options]
 pythonpath = "src/"
 addopts = [
-    "--import-mode=importlib"#,
-    # "--cov=prodige_core --cov-report html"
-    ]
+  "--import-mode=importlib", #,
+  # "--cov=prodige_core --cov-report html"
+]
 
 [tool.coverage.report]
 exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "if self.debug",
-    "if __name__ == .__main__.:"
-    ]
+  "pragma: no cover",
+  "def __repr__",
+  "if self.debug",
+  "if __name__ == .__main__.:",
+]
 ignore_errors = true
 
 [tool.coverage.html]

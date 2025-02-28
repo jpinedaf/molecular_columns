@@ -33,9 +33,15 @@ def c_tau(tau: float) -> float:
     c : float
         The correction factor for the optical depth.
     """
-    if tau <= 0 or np.isnan(tau):
-        return np.nan
-    return tau / (1 - np.exp(-tau))
+    tau = np.asarray(tau)
+    scalar_input = False
+    if tau.ndim == 0:
+        tau = tau[np.newaxis]  # Makes x 1D
+        scalar_input = True
+    c = tau / (1 - np.exp(-tau))
+    bad = (tau <= 0) | (np.isnan(tau))
+    c[bad] = np.nan
+    return np.squeeze(c) if scalar_input else c
 
 
 @u.quantity_input

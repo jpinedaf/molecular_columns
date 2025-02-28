@@ -19,6 +19,7 @@ def test_J_nu() -> None:
 def test_c_tau() -> None:
     assert np.isnan(common_functions.c_tau(-1))
     assert np.isnan(common_functions.c_tau(np.nan))
+    assert (np.isnan(common_functions.c_tau([np.nan, 1.0])) == [True, False]).all()
     assert pytest.approx(common_functions.c_tau(1.0)) == 1.5819767068693265
     assert pytest.approx(common_functions.c_tau(0.5)) == 1.2707470412683992
 
