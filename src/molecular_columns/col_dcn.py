@@ -7,12 +7,12 @@ from .common_functions import J_nu
 
 # transition properties obtained from splatalogue:
 # dcn.dat (downloaded 2023 nov 7)
-file_mol = files("molecular_columns").joinpath("dcn.dat")
-gu_list = np.loadtxt(file_mol, usecols=4)
-E_u_list = np.loadtxt(file_mol, usecols=3) * u.K
+file_mol = files("molecular_columns").joinpath("dcn.csv")
+gu_list = np.loadtxt(file_mol, usecols=4, delimiter=",", skiprows=1)
+E_u_list = np.loadtxt(file_mol, usecols=3, delimiter=",", skiprows=1) * u.K
 full_index = np.arange(np.size(E_u_list))
-freq_list = np.loadtxt(file_mol, usecols=0) * u.GHz
-Aij_list = 10.0 ** (np.loadtxt(file_mol, usecols=2)) / u.s
+freq_list = np.loadtxt(file_mol, usecols=0, delimiter=",", skiprows=1) * u.GHz
+Aij_list = 10.0 ** (np.loadtxt(file_mol, usecols=2, delimiter=",", skiprows=1)) / u.s
 
 
 @u.quantity_input
