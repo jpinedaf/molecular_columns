@@ -1,6 +1,9 @@
 import numpy as np
-from importlib.resources import files
 import astropy.units as u
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 from astropy.constants import c, k_B, h
 
 from .common_functions import J_nu
