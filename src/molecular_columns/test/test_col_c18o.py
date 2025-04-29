@@ -1,7 +1,10 @@
 import numpy as np
 import pytest
 import astropy.units as u
-from astropy.units.errors import UnitsError
+try:
+    from astropy.units.errors import UnitsError
+except ImportError:
+    from astropy.units.core import UnitsError
 import molecular_columns.col_c18o as col_c18o
 
 

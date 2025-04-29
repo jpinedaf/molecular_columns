@@ -112,7 +112,7 @@ venv.bak/
 # VS Code and Environment
 .vscode/
 
-_version.py
+*/_version.py
 
 # avoid MacOS system files
 .DS_Store

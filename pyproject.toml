@@ -34,6 +34,9 @@ namespaces = false
 
 [tool.coverage.run]
 branch = true
+omit = [
+  "src/molecular_columns/_version.py",
+  ]
 source = ["molecular_columns"]
 
 [tool.pytest.ini_options]

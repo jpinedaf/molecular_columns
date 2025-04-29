@@ -2,7 +2,10 @@ import numpy as np
 import pytest
 import astropy.units as u
 import molecular_columns.col_dcn as col_dcn
-from astropy.units.errors import UnitsError
+try:
+    from astropy.units.errors import UnitsError
+except ImportError:
+    from astropy.units.core import UnitsError
 
 
 def test_col_dcn_Q_DCN():
