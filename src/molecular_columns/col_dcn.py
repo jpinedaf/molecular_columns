@@ -1,25 +1,30 @@
 import numpy as np
 import astropy.units as u
+from numpy.typing import NDArray
+
 try:
     from importlib.resources import files
-except ImportError:
+except ImportError:  # pragma: no cover
     from importlib_resources import files
-from astropy.constants import c, k_B, h
+from astropy.constants import c, k_B, h  # type: ignore
 
 from .common_functions import J_nu
 
 # transition properties obtained from splatalogue:
 # dcn.dat (downloaded 2023 nov 7)
-file_mol = files("molecular_columns").joinpath("dcn.dat")
+file_mol = str(files("molecular_columns").joinpath("dcn.dat"))
 gu_list = np.loadtxt(file_mol, usecols=4)
-E_u_list = np.loadtxt(file_mol, usecols=3) * u.K
-full_index = np.arange(np.size(E_u_list))
-freq_list = np.loadtxt(file_mol, usecols=0) * u.GHz
-Aij_list = 10.0 ** (np.loadtxt(file_mol, usecols=2)) / u.s
+E_u_list = np.loadtxt(file_mol, usecols=3, dtype=float) * u.K  # type: ignore
+full_index = np.arange(np.size(E_u_list), dtype=int)
+freq_list = np.loadtxt(file_mol, usecols=0, dtype=float) * u.GHz  # type: ignore
+Aij_list = 10.0 ** (np.loadtxt(file_mol, usecols=2, dtype=float)) / u.s  # type: ignore
 
 
 @u.quantity_input
-def Q_DCN_i(index: int, Tex: u.K = 5 * u.K) -> float:
+def Q_DCN_i(
+    index: int | NDArray[np.int_],
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     The function returns the individual elements of the partition function:
     the occupancy of each level dependent on degeneracy and energy level
@@ -40,7 +45,9 @@ def Q_DCN_i(index: int, Tex: u.K = 5 * u.K) -> float:
 
 
 @u.quantity_input
-def Q_DCN(Tex: u.K = 5 * u.K) -> float:
+def Q_DCN(
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     It returns the partition function for DCN with an excitation
     temperature.
@@ -66,10 +73,10 @@ def Q_DCN(Tex: u.K = 5 * u.K) -> float:
 @u.quantity_input
 def DCN_thin(
     J_up: int = 1,
-    Tex: u.K = 5 * u.K,
-    TdV: u.K * u.km / u.s = 1.0 * u.K * u.km / u.s,
-    T_bg: u.K = 2.73 * u.K,
-) -> u.cm**-2:
+    Tex: u.K = 5 * u.K,  # type: ignore
+    TdV: u.K * u.km / u.s = 1.0 * u.K * u.km / u.s,  # type: ignore
+    T_bg: u.K = 2.73 * u.K,  # type: ignore
+) -> u.cm**-2:  # type: ignore
     """
     Total column density determination from the DCN J_up -> J_up-1 transition.
     The A_ul, frequency and Einstein coefficient are obtained from CDMS.
@@ -95,7 +102,7 @@ def DCN_thin(
         A_ul = Aij_list[J_up - 1]
     else:
         print("J_up is not available")
-        return np.nan * u.cm**-2
+        return np.nan * u.cm**-2  # type: ignore
     Jex = J_nu(Tex=Tex, freq=freq)
     Jbg = J_nu(Tex=T_bg, freq=freq)
 

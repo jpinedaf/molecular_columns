@@ -1,6 +1,7 @@
 import numpy as np
 import astropy.units as u
-from astropy.constants import c, k_B, h
+from numpy.typing import NDArray
+from astropy.constants import c, k_B, h  # type: ignore
 
 from .common_functions import J_nu, c_tau
 
@@ -78,8 +79,10 @@ E_u_list = (
         ]
     )
     * (h * c / k_B)
-    / u.cm
-).to(u.K)
+    / u.cm  # type: ignore
+).to(
+    u.K  # type: ignore
+)
 full_index = np.arange(np.size(E_u_list))
 
 freq_list = (
@@ -117,7 +120,7 @@ freq_list = (
             2594.1710848,
         ]
     )
-    * u.GHz
+    * u.GHz  # type: ignore
 )
 
 Aij_list = (
@@ -155,12 +158,15 @@ Aij_list = (
             1.5199e00,
         ]
     )
-    / u.s
+    / u.s  # type: ignore
 )
 
 
 @u.quantity_input
-def Q_H13COp_i(index: int, Tex: u.K = 5 * u.K) -> float:
+def Q_H13COp_i(
+    index: int | NDArray[np.int_],
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     The function returns the individual elements of the partition function:
     the occupancy of each level dependent on degeneracy and energy level
@@ -168,20 +174,22 @@ def Q_H13COp_i(index: int, Tex: u.K = 5 * u.K) -> float:
 
     Parameters
     ----------
-    index : int
+    index : int | NDArray[np.int_]
         The index of the energy level.
     Tex : u.K
         The excitation temperature.
     Returns
     -------
-    float
+    float | NDArray[np.float64]
         The occupancy of the level.
     """
     return gu_list[index] * np.exp(-E_u_list[index] / Tex)
 
 
 @u.quantity_input
-def Q_H13COp(Tex: u.K = 5 * u.K) -> float:
+def Q_H13COp(
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     It returns the partition function for H^{13}CO^+ with an excitation
     temperature.
@@ -190,11 +198,11 @@ def Q_H13COp(Tex: u.K = 5 * u.K) -> float:
     Parameters
     ----------
     Tex : u.K
-        The excitation temperature.
+        The excitation temperature(s).
     Returns
     -------
-    Q_H13COp_all : float
-        The partition function.
+    Q_H13COp_all : float | NDArray[np.float64]
+        The partition function(s).
     """
     if Tex.size == 1:
         return np.sum(Q_H13COp_i(full_index, Tex=Tex))
@@ -208,10 +216,10 @@ def Q_H13COp(Tex: u.K = 5 * u.K) -> float:
 @u.quantity_input
 def H13COp_thin(
     J_up: int = 1,
-    Tex: u.K = 5 * u.K,
-    TdV: u.K * u.km / u.s = 1.0 * u.K * u.km / u.s,
-    T_bg: u.K = 2.73 * u.K,
-) -> u.cm**-2:
+    Tex: u.K = 5 * u.K,  # type: ignore
+    TdV: u.K * u.km / u.s = 1.0 * u.K * u.km / u.s,  # type: ignore
+    T_bg: u.K = 2.73 * u.K,  # type: ignore
+) -> u.cm**-2:  # type: ignore
     """
     Total column density determination from the HCO+ J_up -> J_up-1 transition.
     The A_ul, frequency and Einstein coefficient are obtained from LAMBDA database.
@@ -237,7 +245,7 @@ def H13COp_thin(
         A_ul = Aij_list[J_up - 1]
     else:
         print("J_up is not available")
-        return np.nan*u.cm**-2
+        return np.nan * u.cm**-2  # type: ignore
     Jex = J_nu(Tex=Tex, freq=freq)
     Jbg = J_nu(Tex=T_bg, freq=freq)
     Ncol = (
@@ -255,11 +263,11 @@ def H13COp_thin(
 @u.quantity_input
 def H13COp_thick(
     J_up: int = 1,
-    Tex: u.K = 5 * u.K,
-    sigma_v: u.km / u.s = 0.2 * u.km / u.s,
-    tau: float = 2.0,
-    T_bg: u.K = 2.73 * u.K,
-) -> u.cm**-2:
+    Tex: u.K = 5 * u.K,  # type: ignore
+    sigma_v: u.km / u.s = 0.2 * u.km / u.s,  # type: ignore
+    tau: float | NDArray[np.float64] = 2.0,
+    T_bg: u.K = 2.73 * u.K,  # type: ignore
+) -> u.cm**-2:  # type: ignore
     """
     Total column density determination from the HCO+ J_up -> J_up-1 transition.
     The A_ul, frequency and Einstein coefficient are obtained from LAMBDA database.
@@ -282,5 +290,5 @@ def H13COp_thick(
     Ncol : u.cm**-2
         The column density.
     """
-    TdV = np.sqrt(2 * np.pi) * tau * sigma_v * u.K
+    TdV = np.sqrt(2 * np.pi) * tau * sigma_v * u.K  # type: ignore
     return H13COp_thin(J_up=J_up, Tex=Tex, TdV=TdV, T_bg=T_bg)
