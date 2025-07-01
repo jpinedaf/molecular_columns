@@ -1,11 +1,8 @@
 import numpy as np
 import astropy.units as u
 from numpy.typing import NDArray
+from importlib.resources import files
 
-try:
-    from importlib.resources import files
-except ImportError:  # pragma: no cover
-    from importlib_resources import files
 from astropy.constants import c, k_B, h  # type: ignore
 
 from .common_functions import J_nu
