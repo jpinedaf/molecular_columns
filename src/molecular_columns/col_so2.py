@@ -1,73 +1,82 @@
 import numpy as np
-import requests
+from numpy.typing import NDArray
 import astropy.units as u
-from astropy.constants import c, k_B, h
+from astropy.constants import c, k_B, h  # type: ignore
 from .common_functions import J_nu
+
+from importlib.resources import files
 
 
 # g_u, E_u, and A_ul values obtained from LAMBDA database
-
 def extract_from_lambda(filename):
     # Read the content from the file
     file_mol = files("molecular_columns").joinpath(filename)
-    f = open(file_mol, 'r')
+    f = open(str(file_mol), "r")
     # Read the content line by line
     lines = f.readlines()
     f.close()
-    
+
     # Make an empty dictionary for J_Kp_Ko, E_u (cm-1), and g_u values
-    level_dict={'E_u':[], 'g_u':[]}
+    level_dict = {"E_u": [], "g_u": []}
     # Make an empty dictionary for frequency (GHz), A_ul, and E_u (K) values
-    trans_dict={'freq':[], 'A_ul':[], 'E_u':[], 'upper_level_no':[]}
+    trans_dict = {"freq": [], "A_ul": [], "E_u": [], "upper_level_no": []}
 
     # Extract WEIGHT values
     i = 0
+    n_levels = 0
+    n_lines_skip = 5  # number of lines to skip at the beginning
     for line in lines:
-        if i == 5:
-            n_levels = int(line.split()[0]) # number of energy levels
-        if line=="!NUMBER OF COLL PARTNERS":
+        if i == n_lines_skip:
+            n_levels = int(line.split()[0])  # number of energy levels
+        if line == "!NUMBER OF COLL PARTNERS":
             break
         parts = line.split()
-        if line[0]=="!":
+        if line[0] == "!":
             pass
         else:
-            if len(parts) ==4: # LEVEL + ENERGIES(cm^-1) + WEIGHT + J_Ka_Kc
+            if len(parts) == 4:  # LEVEL + ENERGIES(cm^-1) + WEIGHT + J_Ka_Kc
                 try:
-                    energy = float(parts[1]) 
-                    level_dict['E_u'].append(energy) 
-                    weight = float(parts[2])  
-                    level_dict['g_u'].append(weight)
+                    energy = float(parts[1])
+                    level_dict["E_u"].append(energy)
+                    weight = float(parts[2])
+                    level_dict["g_u"].append(weight)
                 except ValueError:
                     pass  # Skip lines that don't contain valid numbers
-            if i > 5:
-                if i > n_levels+5: #
-                    if len(parts) ==8: #TRANS + UP + LOW + EINSTEINA(s^-1) + FREQ(GHz) + E_u(K) +?+?
+            if i > n_lines_skip:
+                if i > n_levels + n_lines_skip:
+                    if (
+                        len(parts) == 8
+                    ):  # TRANS + UP + LOW + EINSTEINA(s^-1) + FREQ(GHz) + E_u(K) +?+?
                         try:
                             upper_level_no = int(parts[1])
-                            trans_dict['upper_level_no'].append(upper_level_no)
+                            trans_dict["upper_level_no"].append(upper_level_no)
                             einsteinA = float(parts[3])
-                            trans_dict['A_ul'].append(einsteinA)
+                            trans_dict["A_ul"].append(einsteinA)
                             freq = float(parts[4])
-                            trans_dict['freq'].append(freq)
+                            trans_dict["freq"].append(freq)
                             upper_level_energy = float(parts[5])
-                            trans_dict['E_u'].append(upper_level_energy)
-                            
+                            trans_dict["E_u"].append(upper_level_energy)
+
                         except ValueError:
                             pass
-        i+=1
-   
+        i += 1
+
     return level_dict, trans_dict
 
+
 level_dict, trans_dict = extract_from_lambda("so2@highT.dat")
-gu_list = np.array(level_dict['g_u'])
-E_u_list = (np.array(level_dict['E_u'])* (h * c / k_B) / u.cm).to(u.K)
+gu_list = np.array(level_dict["g_u"])
+E_u_list = (np.array(level_dict["E_u"]) * (h * c / k_B) / u.cm).to(u.K)  # type: ignore
 
 
 full_index = np.arange(np.size(E_u_list))
 
 
 @u.quantity_input
-def Q_SO2_i(index: int, Tex: u.K = 5 * u.K) -> float:
+def Q_SO2_i(
+    index: int | NDArray[np.int_],
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     The function returns the individual elements of the partition function:
     the occupancy of each level dependent on degeneracy and energy level
@@ -88,7 +97,9 @@ def Q_SO2_i(index: int, Tex: u.K = 5 * u.K) -> float:
 
 
 @u.quantity_input
-def Q_SO2(Tex: u.K = 5 * u.K) -> float:
+def Q_SO2(
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     It returns the partition function for para-CO with an excitation
     temperature.
@@ -111,11 +122,13 @@ def Q_SO2(Tex: u.K = 5 * u.K) -> float:
         return Q_SO2_all
 
 
-
 @u.quantity_input
 def SO2_thin(
-    freq: float = 219.1426745* u.GHz, Tex: u.K = 5*u.K, TdV: u.K*u.m/u.s = 1.0*u.K*u.m/u.s, T_bg: u.K= 2.73*u.K
-) -> u.cm**-2:
+    freq: u.GHz = 219.1426745 * u.GHz,  # type: ignore
+    Tex: u.K = 5 * u.K,  # type: ignore
+    TdV: u.K * u.m / u.s = 1.0 * u.K * u.m / u.s,  # type: ignore
+    T_bg: u.K = 2.73 * u.K,  # type: ignore
+) -> u.cm**-2:  # type: ignore
     """
     Column density determination for the CO J=2-1 transition.
     The frequency and Einstein coefficient are obtained from LAMBDA database.
@@ -130,27 +143,28 @@ def SO2_thin(
         The integrated intensity.
     T_bg : u.K
         The background temperature.
-    
+
     Returns
     -------
     Ncol : u.cm**-2
         The column density.
     """
-    trans_index = np.where(np.round(trans_dict['freq'],3) == np.round(freq.value,3))[0][0]
-   
-    A_ul = trans_dict['A_ul'][trans_index] / u.s
-    upper_level_no = trans_dict['upper_level_no'][trans_index] #new
-    upper_level_index = upper_level_no-1 #new
+    trans_index = np.where(np.round(trans_dict["freq"], 3) == np.round(freq.value, 3))[
+        0
+    ][0]
+
+    A_ul = trans_dict["A_ul"][trans_index] / u.s  # type: ignore
+    upper_level_no = trans_dict["upper_level_no"][trans_index]  # new
+    upper_level_index = upper_level_no - 1  # new
     Jex = J_nu(Tex=Tex, freq=freq)
     Jbg = J_nu(Tex=T_bg, freq=freq)
     Ncol = (
         (8 * np.pi * freq**3 / c**3)
         * Q_SO2(Tex=Tex)
         / A_ul
-        / Q_SO2_i(upper_level_index, Tex=Tex) #modified
+        / Q_SO2_i(upper_level_index, Tex=Tex)  # modified
         / (np.exp(h * freq / k_B / Tex) - 1)
-        * TdV/ (Jex - Jbg)
+        * TdV
+        / (Jex - Jbg)
     )
     return Ncol
-
-
