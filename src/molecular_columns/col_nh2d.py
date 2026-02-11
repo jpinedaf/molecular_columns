@@ -1,6 +1,7 @@
 import numpy as np
+from numpy.typing import NDArray
 import astropy.units as u
-from astropy.constants import c, k_B, h
+from astropy.constants import c, k_B, h  # type: ignore
 
 # from .common_functions import J_nu
 # g_u and E_u values obtained from LAMBDA database
@@ -75,8 +76,10 @@ E_u_p_list = (
         ]
     )
     * (h * c / k_B)
-    / u.cm
-).to(u.K)
+    / u.cm  # type: ignore
+).to(
+    u.K  # type: ignore
+)
 p_full_index = np.arange(np.size(E_u_p_list))
 
 # g_u and E_u values obtained from LAMBDA database
@@ -151,13 +154,18 @@ E_u_o_list = (
         ]
     )
     * (h * c / k_B)
-    / u.cm
-).to(u.K)
+    / u.cm  # type: ignore
+).to(
+    u.K  # type: ignore
+)
 o_full_index = np.arange(np.size(E_u_o_list))
 
 
 @u.quantity_input
-def Q_p_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
+def Q_p_NH2D_i(
+    index: int | NDArray[np.int_],
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     The function returns the individual elements of the partition function:
     the occupancy of each level dependent on degeneracy and energy level
@@ -165,20 +173,22 @@ def Q_p_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
 
     Parameters
     ----------
-    index : int
+    index : int | NDArray[int]
         The index of the energy level.
     Tex : u.K
         The excitation temperature.
     Returns
     -------
-    float
+    float | NDArray[np.float64]
         The occupancy of the level.
     """
     return gu_p_list[index] * np.exp(-E_u_p_list[index] / Tex)
 
 
 @u.quantity_input
-def Q_p_NH2D(Tex: u.K = 5 * u.K) -> float:
+def Q_p_NH2D(
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     It returns the partition function for para-NH2D with an excitation
     temperature.
@@ -203,7 +213,10 @@ def Q_p_NH2D(Tex: u.K = 5 * u.K) -> float:
 
 
 @u.quantity_input
-def Q_o_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
+def Q_o_NH2D_i(
+    index: int | NDArray[np.int_],
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:
     """
     The function returns the individual elements of the partition function:
     the occupancy of each level dependent on degeneracy and energy level
@@ -224,7 +237,9 @@ def Q_o_NH2D_i(index: int, Tex: u.K = 5 * u.K) -> float:
 
 
 @u.quantity_input
-def Q_o_NH2D(Tex: u.K = 5 * u.K) -> float:
+def Q_o_NH2D(
+    Tex: u.K = 5 * u.K,  # type: ignore
+) -> float | NDArray[np.float64]:  # type: ignore
     """
     It returns the partition function for ortho-NH2D with an excitation
     temperature.
@@ -250,8 +265,10 @@ def Q_o_NH2D(Tex: u.K = 5 * u.K) -> float:
 
 @u.quantity_input
 def p_NH2D_thick(
-    Tex: u.K = 5 * u.K, sigma_v: u.km / u.s = 0.2 * u.km / u.s, tau: float = 2.0
-) -> u.cm**-2:
+    Tex: u.K = 5 * u.K,  # type: ignore
+    sigma_v: u.km / u.s = 0.2 * u.km / u.s,  # type: ignore
+    tau: float | NDArray[np.float64] = 2.0,
+) -> u.cm**-2:  # type: ignore
     """
     Column density determination for the para-NH2D (1_{11}-1{01}) transition.
     The frequency and Einstein coefficient are obtained from LAMBDA database.
@@ -270,8 +287,8 @@ def p_NH2D_thick(
     Ncol : u.cm**-2
         The column density.
     """
-    freq = 110.153594 * u.GHz
-    A_ul = 0.165e-4 / u.s
+    freq = 110.153594 * u.GHz  # type: ignore
+    A_ul = 0.165e-4 / u.s  # type: ignore
     J_up = 2
     TdV = np.sqrt(2 * np.pi) * tau * sigma_v
     Ncol = (
@@ -287,8 +304,10 @@ def p_NH2D_thick(
 
 @u.quantity_input
 def o_NH2D_thick(
-    Tex: u.K = 5 * u.K, sigma_v: u.km / u.s = 0.2 * u.km / u.s, tau: float = 2.0
-) -> u.cm**-2:
+    Tex: u.K = 5 * u.K,  # type: ignore
+    sigma_v: u.km / u.s = 0.2 * u.km / u.s,  # type: ignore
+    tau: float | NDArray[np.float64] = 2.0,
+) -> u.cm**-2:  # type: ignore
     """
     Column density determination for the ortho-NH2D (1_{11}-1{01}) transition.
     The frequency and Einstein coefficient are obtained from LAMBDA database.
@@ -307,8 +326,8 @@ def o_NH2D_thick(
     Ncol : u.cm**-2
         The column density.
     """
-    freq = 85.92627 * u.GHz
-    A_ul = 0.782e-5 / u.s
+    freq = 85.92627 * u.GHz  # type: ignore
+    A_ul = 0.782e-5 / u.s  # type: ignore
     J_up = 2
     TdV = np.sqrt(2 * np.pi) * tau * sigma_v
     Ncol = (

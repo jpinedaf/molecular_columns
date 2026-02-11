@@ -14,3 +14,16 @@ collection of functions to calculate column densities for different species. Usu
 - SO
 - DCN
 - C<sup>18</sup>O
+- H<sub>2</sub>CO
+- c-C<sub>3</sub>H<sub>2</sub>
+- SO<sub>2</sub>
+
+
+## Contributors:
+
+This package is developed by:
+- Jaime E. Pineda ([@jpinedaf](https://github.com/jpinedaf))
+
+with contributions by:
+- Caroline Gieser ([@CarolineGieser](http://github.com/CarolineGieser))
+- Yu-Ru Chou ([@YuRuChou](https://github.com/YuRuChou))

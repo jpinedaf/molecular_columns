@@ -4,15 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "molecular_columns"
-dependencies = [
-  "importlib-resources;python_version<'3.9'",
-  "astropy>=5.0",
-  "numpy",
-  "pytest",
-  "pytest-cov",
-]
+dependencies = ["astropy>=5.0", "numpy", "pytest", "pytest-cov"]
 
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 authors = [{ name = "Jaime E. Pineda", email = "jpineda@mpe.mpg.de" }]
 maintainers = [{ name = "Jaime E. Pineda", email = "jpineda@mpe.mpg.de" }]
 description = "Column density calculations of molecular especies."
@@ -35,9 +29,7 @@ namespaces = false
 
 [tool.coverage.run]
 branch = true
-omit = [
-  "src/molecular_columns/_version.py",
-  ]
+omit = ["src/molecular_columns/_version.py"]
 source = ["molecular_columns"]
 
 [tool.pytest.ini_options]
